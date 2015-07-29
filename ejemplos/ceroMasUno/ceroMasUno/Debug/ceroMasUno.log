@@ -1,0 +1,29 @@
+﻿Build started 29/07/2015 15:58:11.
+     1>Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\ceroMasUno.vcxproj" on node 2 (Build target(s)).
+     1>AddCudaCompileDeps:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe /E /nologo /showIncludes /TP /D__CUDACC__ /DWIN32 /D_DEBUG /D_CONSOLE /D_MBCS /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I. /FIcuda_runtime.h /c C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu 
+       CudaBuild:
+         Compiling CUDA source file kernel.cu...
+         cmd.exe /C "C:\Users\Shelley\AppData\Local\Temp\tmp4c611cffb33743a0a855a5ef863a51a5.cmd"
+         "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kernel.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu"
+         
+         C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kernel.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu" 
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(15): warning : variable "j" was declared but never referenced
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(15): warning : variable "j" was declared but never referenced
+         kernel.cu
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\lib\Win32" cudart.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.lib" /MACHINE:X86 Debug\kernel.cu.obj
+         ceroMasUno.vcxproj -> C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.exe
+       PostBuildEvent:
+         echo copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\"
+         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\"
+         :VCEnd
+         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\"
+         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart32_65.dll
+         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart64_65.dll
+                 2 archivo(s) copiado(s).
+     1>Done Building Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\ceroMasUno.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:07.87
