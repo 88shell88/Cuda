@@ -23,12 +23,12 @@ int main()
 	const int a[arraySize][arraySize] = { 0 };
 	int c[arraySize][arraySize] = { 0 };
 	int i, j; 
-	for (i = 0; i < arraySize; i++){
+	/*for (i = 0; i < arraySize; i++){
 		for (j = 0; j < arraySize; j++){
 			printf("%d", c[i][j]);
 		}
 		printf("\n");
-	}
+	}*/
 	system("PAUSE");
 	DWORD dw1 = GetTickCount();
 	// Add vectors in parallel.
@@ -38,6 +38,11 @@ int main()
 		return 1;
 	}
 	DWORD dw2 = GetTickCount();
+	for (i = 0; i < arraySize; i++){
+		for (j = 0; j < arraySize; j++){
+			printf("%d", c[i][j]);
+		}
+		printf("\n");
 	printf("Time difference is %d miliseconds\n", (dw2 - dw1));
 	system("PAUSE");
 	// cudaDeviceReset must be called before exiting in order for profiling and

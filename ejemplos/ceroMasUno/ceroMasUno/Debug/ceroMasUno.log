@@ -1,29 +1,41 @@
-﻿Build started 10/08/2015 18:46:28.
+﻿Build started 24/08/2015 16:19:49.
      1>Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\ceroMasUno.vcxproj" on node 2 (Build target(s)).
      1>AddCudaCompileDeps:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe /E /nologo /showIncludes /TP /D__CUDACC__ /DWIN32 /D_DEBUG /D_CONSOLE /D_MBCS /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I. /FIcuda_runtime.h /c C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu 
        CudaBuild:
          Compiling CUDA source file kernel.cu...
-         cmd.exe /C "C:\Users\Shelley\AppData\Local\Temp\tmp38b3996c9cd141288404c9b0671613a1.cmd"
+         cmd.exe /C "C:\Users\Shelley\AppData\Local\Temp\tmpe6bf0c9538224aa38eb2cecdd3372d26.cmd"
          "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kernel.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu"
          
          C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kernel.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu" 
      1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(15): warning : variable "j" was declared but never referenced
-     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(15): warning : variable "j" was declared but never referenced
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(67): error : expected a ";"
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(88): warning : parsing restarts here after previous syntax error
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(89): error : label "Error" was referenced but not defined
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(94): error : this declaration has no storage class or type specifier
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(94): error : identifier "dev_a" is undefined
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(94): error : identifier "a" is undefined
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(94): error : identifier "size" is undefined
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(95): error : expected a declaration
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(100): warning : parsing restarts here after previous syntax error
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(101): error : expected a declaration
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(111): warning : parsing restarts here after previous syntax error
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(114): error : this declaration has no storage class or type specifier
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(114): error : variable "cudaStatus" has already been defined
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(115): error : expected a declaration
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(122): warning : parsing restarts here after previous syntax error
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(123): error : expected a declaration
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(129): warning : parsing restarts here after previous syntax error
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(130): error : expected a declaration
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(136): warning : parsing restarts here after previous syntax error
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(137): error : this declaration has no storage class or type specifier
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(137): error : declaration is incompatible with "cudaError_t cudaFree(void *)"
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(139): error : expected a declaration
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ejemplos/ceroMasUno/ceroMasUno/kernel.cu(140): error : expected a declaration
          kernel.cu
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\lib\Win32" cudart.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.lib" /MACHINE:X86 Debug\kernel.cu.obj
-         ceroMasUno.vcxproj -> C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\ceroMasUno.exe
-       PostBuildEvent:
-         echo copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\"
-         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\"
-         :VCEnd
-         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\Debug\"
-         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart32_65.dll
-         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart64_65.dll
-                 2 archivo(s) copiado(s).
-     1>Done Building Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\ceroMasUno.vcxproj" (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\BuildCustomizations\CUDA 6.5.targets(593,9): error MSB3721: The command ""C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kernel.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\kernel.cu"" exited with code 2.
+     1>Done Building Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ejemplos\ceroMasUno\ceroMasUno\ceroMasUno.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:08.80
+Time Elapsed 00:00:03.25
