@@ -1,0 +1,26 @@
+﻿Build started 14/09/2015 14:29:23.
+     1>Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen\Kohonen.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\users\shelley\dropbox\proyecto\cuda\proyectodefinitivo\kohonen\kohonen\main.cpp(27): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\shelley\dropbox\proyecto\cuda\proyectodefinitivo\kohonen\kohonen\main.cpp(46): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\shelley\dropbox\proyecto\cuda\proyectodefinitivo\kohonen\kohonen\main.cpp(60): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\shelley\dropbox\proyecto\cuda\proyectodefinitivo\kohonen\kohonen\main.cpp(65): warning C4101: 'e' : unreferenced local variable
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\lib\Win32" cudart.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.lib" /MACHINE:X86 Debug\kohonen.cu.obj
+         Debug\main.obj
+         Kohonen.vcxproj -> C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.exe
+       PostBuildEvent:
+         echo copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\"
+         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\"
+         :VCEnd
+         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart*.dll" "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\"
+         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart32_65.dll
+         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\cudart64_65.dll
+                 2 archivo(s) copiado(s).
+     1>Done Building Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen\Kohonen.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:08.96
