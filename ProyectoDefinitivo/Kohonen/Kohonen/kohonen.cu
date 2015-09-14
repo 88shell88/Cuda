@@ -40,6 +40,7 @@ __global__ void learnApuntes(int mapSize,int inputSize){
 	float hR;
 	int epoch;
 	for (epoch = 0; epoch < 1000; epoch++){
+		hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
 		for (nodo= 0; nodo < mapSize; nodo++){
 			hR = hR + weight_shared[nodo*inputSize]/2 * input_shared[i*inputSize] + weight_shared[nodo*inputSize + 1]/2 * input_shared[i*inputSize + 1];
@@ -71,44 +72,6 @@ __global__ void learnApuntes(int mapSize,int inputSize){
 
 		weight_shared[minMapRight2*inputSize] = weight_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[i*inputSize] - weight_shared[minMapRight2*inputSize]);
 		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[i*inputSize + 1] - weight_shared[minMapRight2*inputSize + 1]);
-	}
-}
-
-__global__ void learnACTA(int mapSize)
-{
-	int minMapLeft,minMapRight;
-	int i = threadIdx.x;
-	float minDist = 4.0f;
-	int minMap = 0;
-	int j;
-	float dist;
-	int epoch;
-	for (epoch = 0; epoch < 1; epoch++){
-		//sacar la neurona ganadora y sus vecinos
-		for (j = 0; j < mapSize; j++){
-			dist = sqrt((float)pow(map_shared[j * 2] - input_shared[i * 2], 2) + pow(map_shared[j * 2 + 1] - input_shared[i * 2 + 1], 2));
-			if (dist < minDist){
-				minDist = dist;
-				minMap = j;
-			}
-		}
-		minMapRight = (minMap + 1) % mapSize;
-		minMapLeft = (minMap - 1) % mapSize;
-		//fin sacar la neurona ganadora y sus vecinos
-
-		//mover la neurona ganadora y sus dos vecinos
-		float move1 = 0.1*(1 / pow((float)2, epoch))*(map_shared[j * 2] - input_shared[i * 2]);
-		float move2 = 0.1*(1 / pow((float)2, epoch))*(map_shared[j * 2 +1] - input_shared[i * 2 +1]);
-
-		map_shared[minMap * 2] = atomicAdd(&map_shared[minMap * 2], move1);
-		map_shared[minMap * 2+1] = atomicAdd(&map_shared[minMap * 2], move2);
-
-		map_shared[minMapLeft * 2] = atomicAdd(&map_shared[minMapLeft * 2], move1*0.5);
-		map_shared[minMapLeft * 2 + 1] = atomicAdd(&map_shared[minMapLeft * 2], move2*0.5);
-
-		map_shared[minMapRight * 2] = atomicAdd(&map_shared[minMapRight * 2], move1);
-		map_shared[minMapRight * 2 + 1] = atomicAdd(&map_shared[minMapRight * 2], move2);
-			//fin mover la neurona ganadora y sus dos vecinos
 	}
 }
 
