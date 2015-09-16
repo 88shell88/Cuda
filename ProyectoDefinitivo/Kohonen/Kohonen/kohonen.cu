@@ -38,9 +38,9 @@ __global__ void learnApuntes(int mapSize, int inputSize, float maxInputX, float 
 	for (epoch = 0; epoch < 1000; epoch++){
 		//hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
-		hI = sqrt(pow(weight_shared[0*inputSize] * (input_shared[i*inputSize] - map_shared[0*inputSize]), 2) + pow(weight_shared[0*inputSize + 1] * (input_shared[i*inputSize + 1] - map_shared[0*inputSize + 1]), 2));
+		hI = sqrt(pow((input_shared[i*inputSize] - map_shared[0*inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[0*inputSize + 1]), 2));
 		for (nodo= 1; nodo < mapSize; nodo++){
-			hR = sqrt(pow(weight_shared[nodo*inputSize] * (input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow(weight_shared[nodo*inputSize + 1] * (input_shared[i*inputSize + 1]-map_shared[nodo*inputSize+1]), 2));
+			hR = sqrt(pow(weight_shared[nodo*inputSize] * (input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1]-map_shared[nodo*inputSize+1]), 2));
 			if (hR < hI){
 				printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
 				hI = hR;
