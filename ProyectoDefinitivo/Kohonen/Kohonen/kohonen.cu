@@ -11,26 +11,7 @@ __shared__ float map_shared[kohonen::mapSize * kohonen::dimension];
 __shared__ float input_shared[kohonen::inputSize*kohonen::numInput];
 __shared__ float weight_shared[kohonen::inputSize*kohonen::mapSize];
 
-
-__global__ void startData(int inputSize, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input,  float *dev_map)
-{
-	int i = threadIdx.x;
-	if (i < kohonen::numInput){
-		input_shared[i*2] = (dev_input[i*2]-(minInputX+maxInputX)/2)/(maxInputX-minInputX);
-		input_shared[i * 2 + 1] = (dev_input[i * 2 + 1] - (minInputY + maxInputY) / 2) / (maxInputY - minInputY);
-	}
-	int j;
-	for (j = 0; j < 2; j++){
-		map_shared[i * 2 +j] = dev_map[i * 2+j];
-		map_shared[i * 2 + j] = dev_map[i * 2 + j];
-	}
-	for (j = 0; j < inputSize; j++){
-		weight_shared[i*inputSize + j] = 0.5;
-	}
-    
-}
-
-__global__ void learnApuntes(int mapSize,int inputSize){
+__global__ void learnApuntes(int mapSize, int inputSize, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map, float *dev_weight){
 	int minMapLeft1, minMapRight1, minMapLeft2, minMapRight2;
 	float eta = 0.1f;
 	int i = threadIdx.x;
@@ -39,20 +20,49 @@ __global__ void learnApuntes(int mapSize,int inputSize){
 	int nodo;
 	float hR;
 	int epoch;
+
+	//start data
+	if (i < kohonen::numInput){
+		input_shared[i * 2] = (dev_input[i * 2] - (minInputX + maxInputX) / 2) / (maxInputX - minInputX);
+		input_shared[i * 2 + 1] = (dev_input[i * 2 + 1] - (minInputY + maxInputY) / 2) / (maxInputY - minInputY);
+		
+	}
+	map_shared[i * 2] = dev_map[i * 2];
+	map_shared[i * 2 + 1] = dev_map[i * 2 + 1];
+	weight_shared[i*inputSize] = dev_weight[i*inputSize];
+	weight_shared[i*inputSize + 1] = dev_weight[i*inputSize +1];
+
+	__syncthreads();
+
+	printf("weight = %f    input= %f\n", weight_shared[0 * inputSize], input_shared[i*inputSize]);
 	for (epoch = 0; epoch < 1000; epoch++){
-		hR = 0.0f;
+		//hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
-		for (nodo= 0; nodo < mapSize; nodo++){
-			hR = hR + weight_shared[nodo*inputSize]/2 * input_shared[i*inputSize] + weight_shared[nodo*inputSize + 1]/2 * input_shared[i*inputSize + 1];
+		hI = sqrt(pow(weight_shared[0*inputSize] * (input_shared[i*inputSize] - map_shared[0*inputSize]), 2) + pow(weight_shared[0*inputSize + 1] * (input_shared[i*inputSize + 1] - map_shared[0*inputSize + 1]), 2));
+		for (nodo= 1; nodo < mapSize; nodo++){
+			hR = sqrt(pow(weight_shared[nodo*inputSize] * (input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow(weight_shared[nodo*inputSize + 1] * (input_shared[i*inputSize + 1]-map_shared[nodo*inputSize+1]), 2));
 			if (hR < hI){
+				printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
 				hI = hR;
 				minMap = nodo;
+
 			}
 		}
-		minMapRight1 = (minMap+1) % mapSize;
-		minMapLeft1 = (minMap - 1) % mapSize;
-		minMapRight2 = (minMap + 2) % mapSize;
-		minMapLeft2 = (minMap -2) % mapSize;
+		minMapRight1 = minMap+1;
+		if (minMapRight1 == mapSize) {
+			minMapRight1 = 0;
+			minMapRight2 = 1;
+		}
+
+		minMapLeft1 = minMap - 1;
+		if (minMapLeft1 == -1)  {
+			minMapLeft1 == mapSize - 1;
+			minMapLeft2 == mapSize - 2;
+		}
+		minMapRight2 = minMap + 2;
+		if (minMapRight2 == mapSize) minMapRight2 = 0;
+		minMapLeft2 = minMap -2;
+		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 		
 		weight_shared[minMap*inputSize] = weight_shared[minMap*inputSize] + eta*(input_shared[i*inputSize] - weight_shared[minMap*inputSize]);
 		weight_shared[minMap*inputSize + 1] = weight_shared[minMap*inputSize+1] + eta*(input_shared[i*inputSize+1] - weight_shared[minMap*inputSize+1]);
@@ -73,19 +83,14 @@ __global__ void learnApuntes(int mapSize,int inputSize){
 		weight_shared[minMapRight2*inputSize] = weight_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[i*inputSize] - weight_shared[minMapRight2*inputSize]);
 		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[i*inputSize + 1] - weight_shared[minMapRight2*inputSize + 1]);
 	}
+	printf("***********%d    %d\n",i, minMap);
+	//stop data
+	if (i < kohonen::numInput){
+		dev_weight[i*inputSize] = weight_shared[i*inputSize];
+		dev_weight[i*inputSize + 1] = weight_shared[i*inputSize + 1];
+	}
 }
 
-__global__ void stopData(int inputSize, float *dev_map, float *dev_weight)
-{
-	int i = threadIdx.x;
-	int j;
-	for (j = 0; j < inputSize; j++){
-		dev_weight[i*inputSize +j]=weight_shared[i*inputSize + j];
-	}
-	//for (j = 0; j < 2; j++){
-	//	dev_map[i * 2 + j] = map_shared[i * 2 + j];
-	//}
-}
 
 // Helper function for using CUDA to add vectors in parallel.
 void kohonen::train(int inputSize, int mapSize, int numInput, float *input, float *map, float *weight, float maxInputX, float minInputX, float maxInputY, float minInputY)
@@ -138,11 +143,7 @@ void kohonen::train(int inputSize, int mapSize, int numInput, float *input, floa
 	}
 
     // Launch a kernel on the GPU with one thread for each element.
-	startData << <1, mapSize >> >(inputSize, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
-
-	learnApuntes << <1, numInput >> >(mapSize,inputSize);
-	
-	stopData << <1, mapSize >> >(inputSize, dev_map,dev_weight);
+	learnApuntes << <1, mapSize >> >(mapSize, inputSize, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map, dev_weight);
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();
     if (cudaStatus != cudaSuccess) {

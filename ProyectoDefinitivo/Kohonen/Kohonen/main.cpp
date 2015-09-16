@@ -45,6 +45,10 @@ int main(const int argc, const char *const *const argv){
 		{ -1, 0 }, { -0.966, -0.259 }, { -0.866, -0.5 }, { -0.707, -0.707 }, { -0.5, -0.866 }, { -0.259, -0.966 },
 		{ 0, -1 }, { 0.259, -0.966 }, { 0.5, -0.866 }, { 0.707, -0.707 }, { 0.866, -0.5 }, { 0.966, -0.259 } };
 		float weight[kohonen::mapSize*kohonen::inputSize] = { 0 };//rand() / ((double) RAND_MAX);
+		for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
+			weight[i] = rand() / ((float)RAND_MAX);
+			printf("%f\n", weight[i]);
+		}
 		DWORD dw1 = GetTickCount();
 		koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, *map, weight, maxInputX, minInputX, maxInputY, minInputY);
 		DWORD dw2 = GetTickCount();
@@ -55,12 +59,12 @@ int main(const int argc, const char *const *const argv){
 			printf("%f\n",weight[i]);
 		}
 		system("PAUSE");
-		printf("*****************************************************************************************");
+		/*printf("*****************************************************************************************");
 		for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
 			weight[i] = rand() / ((double)RAND_MAX);
 			printf("%f\n", weight[i]);
 		}
-		system("PAUSE");
+		system("PAUSE");*/
 	}
 	catch (std::exception &e){
 		printf("error");
