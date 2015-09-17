@@ -11,6 +11,8 @@
 #include <windows.h>
 using namespace std;
 
+#define PI 3.14159265
+
 int main(const int argc, const char *const *const argv){
 	try{
 		int i = 0;
@@ -40,17 +42,30 @@ int main(const int argc, const char *const *const argv){
 		float maxInputY = *std::max_element(inputY, inputY + kohonen::numInput * kohonen::inputSize/2);
 		float minInputY = *std::min_element(inputY, inputY + kohonen::numInput * kohonen::inputSize/2);
 		//360 entre numero de puntos distancia entre angulos. 1º cos angulo y 2º sen angulo
-		float map[kohonen::mapSize][kohonen::dimension] = { { 1, 0 }, { 0.966, 0.259 }, { 0.866, 0.5 }, { 0.707, 0.707 }, { 0.5, 0.866 }, { 0.259, 0.966 },
+		/*float map[kohonen::mapSize][kohonen::dimension] = { { 1, 0 }, { 0.966, 0.259 }, { 0.866, 0.5 }, { 0.707, 0.707 }, { 0.5, 0.866 }, { 0.259, 0.966 },
 		{ 0, 1 }, { -0.259, 0.966 }, { -0.5, 0.866 }, { -0.707, 0.707 }, { -0.866, 0.5 }, { -0.966, 0.259 },
 		{ -1, 0 }, { -0.966, -0.259 }, { -0.866, -0.5 }, { -0.707, -0.707 }, { -0.5, -0.866 }, { -0.259, -0.966 },
 		{ 0, -1 }, { 0.259, -0.966 }, { 0.5, -0.866 }, { 0.707, -0.707 }, { 0.866, -0.5 }, { 0.966, -0.259 } };
-		float weight[kohonen::mapSize*kohonen::inputSize] = { 0 };//rand() / ((double) RAND_MAX);
+		float weight[kohonen::mapSize*kohonen::inputSize] = { 0 };*///rand() / ((double) RAND_MAX);
+
+		float map[kohonen::numInput*kohonen::dimension * 3];
+		float angulo = 360 / (kohonen::numInput * 3);
+		printf("%f", angulo);
+		for (i = 0; i < kohonen::numInput * 3; i++){
+			map[i*kohonen::dimension] = cos((angulo*i)* PI / 180.0);
+			printf("nodo = %d  angulo = %f   x = %f   ,   ", i, i*angulo, map[i*kohonen::dimension]);
+			map[i*kohonen::dimension + 1] = sin((angulo*i)* PI / 180);
+			printf("y = %f\n", map[i*kohonen::dimension+1]);
+			
+		}
+		system("PAUSE");
+		float weight[kohonen::numInput*kohonen::dimension * 3];
 		for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
 			weight[i] = rand() / ((float)RAND_MAX);
 			printf("%f\n", weight[i]);
 		}
 		DWORD dw1 = GetTickCount();
-		koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, *map, weight, maxInputX, minInputX, maxInputY, minInputY);
+		koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, map, weight, maxInputX, minInputX, maxInputY, minInputY);
 		DWORD dw2 = GetTickCount();
 		printf("Time difference is %d miliseconds\n", (dw2 - dw1));
 		system("PAUSE");

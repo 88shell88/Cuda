@@ -25,7 +25,7 @@ __global__ void learnApuntes(int mapSize, int inputSize, float maxInputX, float 
 	if (i < kohonen::numInput){
 		input_shared[i * 2] = (dev_input[i * 2] - (minInputX + maxInputX) / 2) / (maxInputX - minInputX);
 		input_shared[i * 2 + 1] = (dev_input[i * 2 + 1] - (minInputY + maxInputY) / 2) / (maxInputY - minInputY);
-		
+		printf("%d     %f    ,     %f\n",i,input_shared[i*2],input_shared[i*2+1]);
 	}
 	map_shared[i * 2] = dev_map[i * 2];
 	map_shared[i * 2 + 1] = dev_map[i * 2 + 1];
@@ -34,15 +34,17 @@ __global__ void learnApuntes(int mapSize, int inputSize, float maxInputX, float 
 
 	__syncthreads();
 
-	printf("weight = %f    input= %f\n", weight_shared[0 * inputSize], input_shared[i*inputSize]);
-	for (epoch = 0; epoch < 1000; epoch++){
+	printf("weight = %f    input= %f\n", weight_shared[i * inputSize], input_shared[i*inputSize]);
+	for (epoch = 0; epoch < 1; epoch++){
 		//hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
 		hI = sqrt(pow((input_shared[i*inputSize] - map_shared[0*inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[0*inputSize + 1]), 2));
 		for (nodo= 1; nodo < mapSize; nodo++){
-			hR = sqrt(pow(weight_shared[nodo*inputSize] * (input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1]-map_shared[nodo*inputSize+1]), 2));
+			hR = sqrt(pow( (input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1]-map_shared[nodo*inputSize+1]), 2));
 			if (hR < hI){
-				printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
+				if (i == 0){
+					printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
+				}
 				hI = hR;
 				minMap = nodo;
 
@@ -64,24 +66,24 @@ __global__ void learnApuntes(int mapSize, int inputSize, float maxInputX, float 
 		minMapLeft2 = minMap -2;
 		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 		
-		weight_shared[minMap*inputSize] = weight_shared[minMap*inputSize] + eta*(input_shared[i*inputSize] - weight_shared[minMap*inputSize]);
-		weight_shared[minMap*inputSize + 1] = weight_shared[minMap*inputSize+1] + eta*(input_shared[i*inputSize+1] - weight_shared[minMap*inputSize+1]);
+		weight_shared[minMap*inputSize] = weight_shared[minMap*inputSize] + eta*(input_shared[i*inputSize] - map_shared[minMap*inputSize]);
+		weight_shared[minMap*inputSize + 1] = weight_shared[minMap*inputSize+1] + eta*(input_shared[i*inputSize+1] - map_shared[minMap*inputSize+1]);
 		__syncthreads();
 
-		weight_shared[minMapLeft1*inputSize] = weight_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[i*inputSize] - weight_shared[minMapLeft1*inputSize]);
-		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[i*inputSize + 1] - weight_shared[minMapLeft1*inputSize + 1]);
+		weight_shared[minMapLeft1*inputSize] = weight_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[i*inputSize] - map_shared[minMapLeft1*inputSize]);
+		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[i*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
 		__syncthreads();
 
-		weight_shared[minMapLeft2*inputSize]=weight_shared[minMapLeft2*inputSize] + eta*0.25*(input_shared[i*inputSize] - weight_shared[minMapLeft2*inputSize]);
-		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapLeft2*inputSize + 1] + eta*0.25*(input_shared[i*inputSize + 1] - weight_shared[minMapLeft2*inputSize + 1]);
+		weight_shared[minMapLeft2*inputSize]=weight_shared[minMapLeft2*inputSize] + eta*0.25*(input_shared[i*inputSize] - map_shared[minMapLeft2*inputSize]);
+		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapLeft2*inputSize + 1] + eta*0.25*(input_shared[i*inputSize + 1] - map_shared[minMapLeft2*inputSize + 1]);
 		__syncthreads();
 
-		weight_shared[minMapRight1*inputSize] = weight_shared[minMapRight1*inputSize] + eta*0.5*(input_shared[i*inputSize] - weight_shared[minMapRight1*inputSize]);
-		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapRight1*inputSize + 1] + eta*0.5*(input_shared[i*inputSize + 1] - weight_shared[minMapRight1*inputSize + 1]);
+		weight_shared[minMapRight1*inputSize] = weight_shared[minMapRight1*inputSize] + eta*0.5*(input_shared[i*inputSize] - map_shared[minMapRight1*inputSize]);
+		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapRight1*inputSize + 1] + eta*0.5*(input_shared[i*inputSize + 1] - map_shared[minMapRight1*inputSize + 1]);
 		__syncthreads();
 
-		weight_shared[minMapRight2*inputSize] = weight_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[i*inputSize] - weight_shared[minMapRight2*inputSize]);
-		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[i*inputSize + 1] - weight_shared[minMapRight2*inputSize + 1]);
+		weight_shared[minMapRight2*inputSize] = weight_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[i*inputSize] - map_shared[minMapRight2*inputSize]);
+		weight_shared[minMapLeft1*inputSize + 1] = weight_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[i*inputSize + 1] - map_shared[minMapRight2*inputSize + 1]);
 	}
 	printf("***********%d    %d\n",i, minMap);
 	//stop data
