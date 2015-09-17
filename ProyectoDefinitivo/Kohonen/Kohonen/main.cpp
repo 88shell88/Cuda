@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <fstream>
 #include <windows.h>
+#include <iostream>
 using namespace std;
 
 #define PI 3.14159265
@@ -27,6 +28,7 @@ int main(const int argc, const char *const *const argv){
 			53.721, 19.170, 54.076, 19.399,
 			53.603, 19.027, 54.390, 19.399,
 			53.494, 18.969, 49.763, 18.790 };
+		
 		float inputX[kohonen::numInput * kohonen::inputSize / 2];
 		float inputY[kohonen::numInput * kohonen::inputSize / 2];
 		for (i = 0; i < kohonen::numInput * kohonen::inputSize;i++){
@@ -41,6 +43,25 @@ int main(const int argc, const char *const *const argv){
 		float minInputX = *std::min_element(inputX, inputX + kohonen::numInput * kohonen::inputSize/2);
 		float maxInputY = *std::max_element(inputY, inputY + kohonen::numInput * kohonen::inputSize/2);
 		float minInputY = *std::min_element(inputY, inputY + kohonen::numInput * kohonen::inputSize/2);
+		//printf("minX : %f   . minY : %f    . maxX : %f    . maxy : %f", minInputX,minInputY,maxInputX,maxInputY);
+		float inputaux[kohonen::numInput * kohonen::inputSize] = { 0 };
+		for (i = 0; i < kohonen::numInput*kohonen::inputSize;i++){
+			if ((i % 2) == 0){
+				inputaux[i] = (input[i] - (minInputX + maxInputX) / 2) / (maxInputX - minInputX);
+			}
+			else{
+				inputaux[i] = (input[i] - (minInputY + maxInputY) / 2) / (maxInputY - minInputY);
+			}
+		}
+		ofstream fout("input.txt");
+		if (fout.is_open())
+		{
+			for (i = 0; i < kohonen::numInput; i++)
+			{
+				fout << inputaux[i*kohonen::dimension] << "   " << inputaux[i*kohonen::dimension + 1] << endl; //writing ith character of array in the file
+			}
+		}
+		fout.close();
 		//360 entre numero de puntos distancia entre angulos. 1º cos angulo y 2º sen angulo
 		/*float map[kohonen::mapSize][kohonen::dimension] = { { 1, 0 }, { 0.966, 0.259 }, { 0.866, 0.5 }, { 0.707, 0.707 }, { 0.5, 0.866 }, { 0.259, 0.966 },
 		{ 0, 1 }, { -0.259, 0.966 }, { -0.5, 0.866 }, { -0.707, 0.707 }, { -0.866, 0.5 }, { -0.966, 0.259 },
@@ -51,6 +72,8 @@ int main(const int argc, const char *const *const argv){
 		float map[kohonen::numInput*kohonen::dimension * 3];
 		float angulo = 360 / (kohonen::numInput * 3);
 		printf("%f", angulo);
+		
+		
 		for (i = 0; i < kohonen::numInput * 3; i++){
 			map[i*kohonen::dimension] = cos((angulo*i)* PI / 180.0);
 			printf("nodo = %d  angulo = %f   x = %f   ,   ", i, i*angulo, map[i*kohonen::dimension]);
@@ -58,21 +81,40 @@ int main(const int argc, const char *const *const argv){
 			printf("y = %f\n", map[i*kohonen::dimension+1]);
 			
 		}
+		ofstream fout2("mapOrig.txt");
+		if (fout2.is_open())
+		{
+			for (i = 0; i < kohonen::numInput * 3; i++)
+			{
+				fout2 << map[i*kohonen::dimension] << "   " << map[i*kohonen::dimension + 1]<<endl; //writing ith character of array in the file
+			}
+		}
+		fout2.close();
 		system("PAUSE");
-		float weight[kohonen::numInput*kohonen::dimension * 3];
-		for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
+		//float weight[kohonen::numInput*kohonen::dimension * 3]={0};
+		/*for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
 			weight[i] = rand() / ((float)RAND_MAX);
 			printf("%f\n", weight[i]);
-		}
+		}*/
 		DWORD dw1 = GetTickCount();
-		koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, map, weight, maxInputX, minInputX, maxInputY, minInputY);
+		koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, map, maxInputX, minInputX, maxInputY, minInputY);
 		DWORD dw2 = GetTickCount();
 		printf("Time difference is %d miliseconds\n", (dw2 - dw1));
 		system("PAUSE");
 		
-		for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
-			printf("%f\n",weight[i]);
+		for (i = 0; i < kohonen::numInput * 3; i++){
+			printf("nodo = %d     x = %f   ,",i, map[i*kohonen::dimension]);
+			printf("    y = %f\n", map[i*kohonen::dimension+1]);
 		}
+		ofstream fout3("mapAfter.txt");
+		if (fout3.is_open())
+		{
+			for (i = 0; i < kohonen::numInput * 3; i++)
+			{
+				fout3 << map[i*kohonen::dimension] << "   " << map[i*kohonen::dimension + 1] << endl; //writing ith character of array in the file
+			}
+		}
+		fout3.close();
 		system("PAUSE");
 		/*printf("*****************************************************************************************");
 		for (i = 0; i < kohonen::mapSize*kohonen::inputSize; i++){
