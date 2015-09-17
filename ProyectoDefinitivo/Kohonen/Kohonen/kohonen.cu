@@ -16,11 +16,11 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 	float eta = 0.1f;
 	float eta2 = 0.5f;
 	int i = threadIdx.x;
-	float hI ,hI2;
+	float hI ,hI1;
 	int minMap = 0;
 	int minNodo = 0;
 	int nodo;
-	float hR,hR2;
+	float hR,hR2,hR1,hR3;
 	int epoch;
 
 	//start data
@@ -41,9 +41,12 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 		//hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
 		hI = sqrt(pow((input_shared[0*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[0*inputSize + 1] - map_shared[i*inputSize + 1]), 2));
-		hI2 = sqrt(pow((input_shared[0 * inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[0 * inputSize + 1] - map_shared[i*inputSize + 1]), 2));
+		//hI1= sqrt(pow((input_shared[i*inputSize] - map_shared[0 * inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[0 * inputSize + 1]), 2));
 		for (nodo= 1; nodo < numInput; nodo++){
 			hR = sqrt(pow( (input_shared[nodo*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[nodo*inputSize + 1]-map_shared[i*inputSize+1]), 2));
+			hR1 = sqrt(pow((input_shared[i/3*inputSize] - map_shared[nodo*3*inputSize]), 2) + pow((input_shared[i/3*inputSize + 1] - map_shared[nodo*3*inputSize + 1]), 2));
+			hR2 = sqrt(pow((input_shared[i/3*inputSize] - map_shared[nodo * 3 * inputSize+1]), 2) + pow((input_shared[i/3*inputSize + 1] - map_shared[nodo * 3 * inputSize + 2]), 2));
+			hR3 = sqrt(pow((input_shared[i/3*inputSize] - map_shared[nodo * 3 * inputSize+2]), 2) + pow((input_shared[i/3*inputSize + 1] - map_shared[nodo * 3 * inputSize + 3]), 2));
 			if (hR < hI){
 				/*if (i == 0){
 					printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
@@ -52,7 +55,41 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 				minNodo = nodo;
 
 			}
+			/*if (hR1 < hI1){
+				hI1 = hR1;
+				minMap = nodo*3;
+			}
+			if (hR2 < hI1){
+				hI1 = hR2;
+				minMap = nodo * 3 +1;
+			}if (hR3 < hI1){
+				hI1 = hR3;
+				minMap = nodo * 3+2;
+			}*/
 		}
+		/*if ((i % 3) == 0){
+			int j = i / 3;
+			minMapRight1 = minMap + 1;
+			if (minMapRight1 == mapSize) {
+				minMapRight1 = 0;
+				minMapRight2 = 1;
+			}
+
+			minMapLeft1 = minMap - 1;
+			if (minMapLeft1 == -1)  {
+				minMapLeft1 == mapSize - 1;
+				minMapLeft2 == mapSize - 2;
+			}
+			minMapRight2 = minMap + 2;
+			if (minMapRight2 == mapSize) minMapRight2 = 0;
+			minMapLeft2 = minMap - 2;
+			if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
+
+			//atomicAdd( &weight_shared[minMap*inputSize] , eta*(input_shared[j*inputSize] - map_shared[minMap*inputSize]));
+			//atomicAdd( &weight_shared[minMap*inputSize + 1] , eta*(input_shared[j*inputSize + 1] - map_shared[minMap*inputSize + 1]));
+
+		}*/
+
 		minMap = i;
 		minMapRight1 = minMap+1;
 		if (minMapRight1 == mapSize) {

@@ -1,17 +1,27 @@
-﻿Build started 17/09/2015 17:56:53.
+﻿Build started 17/09/2015 18:31:09.
      1>Project "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen\Kohonen.vcxproj" on node 2 (Build target(s)).
      1>AddCudaCompileDeps:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe /E /nologo /showIncludes /TP /D__CUDACC__ /DWIN32 /D_DEBUG /D_CONSOLE /D_MBCS /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I. /FIcuda_runtime.h /c C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen\kohonen.cu 
        CudaBuild:
          Compiling CUDA source file kohonen.cu...
-         cmd.exe /C "C:\Users\Shelley\AppData\Local\Temp\tmp9bd9d24193d249a2aade7e8d716b00b3.cmd"
+         cmd.exe /C "C:\Users\Shelley\AppData\Local\Temp\tmpd916ad7771da42bda8b573711a51777c.cmd"
          "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kohonen.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen\kohonen.cu"
          
          C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd  " -o Debug\kohonen.cu.obj "C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Kohonen\kohonen.cu" 
-     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(63): warning : expression has no effect
-     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(64): warning : expression has no effect
-     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(63): warning : expression has no effect
-     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(64): warning : expression has no effect
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(102): warning : expression has no effect
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(103): warning : expression has no effect
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(17): warning : variable "eta2" was declared but never referenced
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(19): warning : variable "hI1" was declared but never referenced
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(23): warning : variable "hR2" was set but never used
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(23): warning : variable "hR1" was set but never used
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(23): warning : variable "hR3" was set but never used
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(102): warning : expression has no effect
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(103): warning : expression has no effect
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(17): warning : variable "eta2" was declared but never referenced
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(19): warning : variable "hI1" was declared but never referenced
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(23): warning : variable "hR2" was set but never used
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(23): warning : variable "hR1" was set but never used
+     1>C:/Users/Shelley/Dropbox/Proyecto/Cuda/ProyectoDefinitivo/Kohonen/Kohonen/kohonen.cu(23): warning : variable "hR3" was set but never used
          kohonen.cu
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\lib\Win32" cudart.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Shelley\Dropbox\Proyecto\Cuda\ProyectoDefinitivo\Kohonen\Debug\Kohonen.lib" /MACHINE:X86 Debug\kohonen.cu.obj
@@ -29,4 +39,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.14
+Time Elapsed 00:00:03.90
