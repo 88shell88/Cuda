@@ -10,6 +10,7 @@
 #include <fstream>
 #include <windows.h>
 #include <iostream>
+#include "cuda_runtime.h"
 using namespace std;
 
 #define PI 3.14159265
@@ -47,10 +48,10 @@ int main(const int argc, const char *const *const argv){
 		float inputaux[kohonen::numInput * kohonen::inputSize] = { 0 };
 		for (i = 0; i < kohonen::numInput*kohonen::inputSize;i++){
 			if ((i % 2) == 0){
-				inputaux[i] = (input[i] - (minInputX + maxInputX) / 2) / (maxInputX - minInputX);
+				input[i] = (input[i] - (minInputX + maxInputX) / 2) / (maxInputX - minInputX);
 			}
 			else{
-				inputaux[i] = (input[i] - (minInputY + maxInputY) / 2) / (maxInputY - minInputY);
+				input[i] = (input[i] - (minInputY + maxInputY) / 2) / (maxInputY - minInputY);
 			}
 		}
 		ofstream fout("input.txt");
@@ -58,7 +59,7 @@ int main(const int argc, const char *const *const argv){
 		{
 			for (i = 0; i < kohonen::numInput; i++)
 			{
-				fout << inputaux[i*kohonen::dimension] << "   " << inputaux[i*kohonen::dimension + 1] << endl; //writing ith character of array in the file
+				fout << input[i*kohonen::dimension] << "   " << input[i*kohonen::dimension + 1] << endl; //writing ith character of array in the file
 			}
 		}
 		fout.close();
@@ -97,8 +98,12 @@ int main(const int argc, const char *const *const argv){
 			printf("%f\n", weight[i]);
 		}*/
 		DWORD dw1 = GetTickCount();
-		koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, map, maxInputX, minInputX, maxInputY, minInputY);
+		cudaError_t cudaStatus = koh.train(kohonen::inputSize, kohonen::mapSize, kohonen::numInput, input, map, maxInputX, minInputX, maxInputY, minInputY);
 		DWORD dw2 = GetTickCount();
+		if (cudaStatus != cudaSuccess) {
+			fprintf(stderr, "addWithCuda failed!");
+			return 1;
+		}
 		printf("Time difference is %d miliseconds\n", (dw2 - dw1));
 		system("PAUSE");
 		

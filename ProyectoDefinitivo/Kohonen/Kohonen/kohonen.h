@@ -1,8 +1,10 @@
 #ifndef KOHONEN_H_
 #define KOHONEN_H_
+
+#include "cuda_runtime.h"
 class kohonen{
 public: 
-	void train(int inputSize, int mapSize, int numInput, float *input, float *map, float maxInputX, float minInputX, float maxInputY, float minInputY);
+	cudaError_t train(int inputSize, int mapSize, int numInput, float *input, float *map, float maxInputX, float minInputX, float maxInputY, float minInputY);
 
 public:
 	static const int inputSize = 2;
