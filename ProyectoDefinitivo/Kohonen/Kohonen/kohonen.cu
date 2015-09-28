@@ -125,6 +125,7 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 	int nodo;
 	float hR,hR2,hR1,hR3;
 	int epoch;
+	bool alocated[60] = { false };
 	//printf("mapSize : %d         inputSize : %d        numInput : %d\n" , mapSize,inputSize,numInput);
 
 	//start data
@@ -145,7 +146,7 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 	/*
 		Iteraciones desde 0 hasta X
 	*/
-	for (epoch = 0; epoch < 500; epoch++){
+	for (epoch = 0; epoch < 2000; epoch++){
 		// hR es la distancia a comprobar, empieza a 0
 		hR = 0.0f;
 
@@ -171,7 +172,7 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 				//printf("nodo 45  i : %d    hr : %f     hI : %f\n",i,hR,hI);
 			//}
 			//y si es menor que el minimo local, almacena su indice
-			if (hR < hI){
+			if ((hR < hI)){//&&(alocated[nodo]==false)){
 
 				/*if (i == 19){
 					printf(" El de arriba es un tio de puta madre\n");
@@ -181,6 +182,10 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 				hI = hR;
 				minMap = nodo;
 
+			}
+			if (hR == 0){
+				alocated[nodo] = true;
+				if (epoch == 1999)printf("alocated i = %d --> nodo = %d\n",i,nodo);
 			}
 			//else{
 				//if (i == 19){
@@ -210,22 +215,24 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 		}
 		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 		eta = eta - eta/100;
+		if (epoch >= 500) eta = 0.5f;
 		//if (i == 19) printf("Voy a mover el nodo %d, que tienes las coordenadas en: %d, %d: (%f, %f) ->", minMap, minMap*inputSize, minMap*inputSize + 1, map_shared[minMap*inputSize], map_shared[minMap*inputSize + 1]);
 		map_shared[minMap*inputSize]=map_shared[minMap*inputSize] + eta*(input_shared[minNodo*inputSize] - map_shared[minMap*inputSize]);
 		map_shared[minMap*inputSize + 1]=map_shared[minMap*inputSize + 1] + eta*(input_shared[minNodo*inputSize + 1] - map_shared[minMap*inputSize + 1]);
 		//if(i==19) printf("(%f, %f)\n", map_shared[minMap*inputSize], map_shared[minMap*inputSize + 1]);
-		map_shared[minMapLeft1*inputSize]=map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
-		map_shared[minMapLeft1*inputSize + 1]=map_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
+		if (epoch < 500){
+			map_shared[minMapLeft1*inputSize] = map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
+			map_shared[minMapLeft1*inputSize + 1] = map_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
 
-		map_shared[minMapLeft2*inputSize]=map_shared[minMapLeft2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapLeft2*inputSize]);
-		map_shared[minMapLeft2*inputSize + 1]=map_shared[minMapLeft2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft2*inputSize + 1]);
+			map_shared[minMapLeft2*inputSize] = map_shared[minMapLeft2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapLeft2*inputSize]);
+			map_shared[minMapLeft2*inputSize + 1] = map_shared[minMapLeft2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft2*inputSize + 1]);
 
-		map_shared[minMapRight1*inputSize]=map_shared[minMapRight1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapRight1*inputSize]);
-		map_shared[minMapRight1*inputSize + 1]=map_shared[minMapRight1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight1*inputSize + 1]);
+			map_shared[minMapRight1*inputSize] = map_shared[minMapRight1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapRight1*inputSize]);
+			map_shared[minMapRight1*inputSize + 1] = map_shared[minMapRight1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight1*inputSize + 1]);
 
-		map_shared[minMapRight2*inputSize]=map_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapRight2*inputSize]);
-		map_shared[minMapRight2*inputSize + 1]=map_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight2*inputSize + 1]);
-	
+			map_shared[minMapRight2*inputSize] = map_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapRight2*inputSize]);
+			map_shared[minMapRight2*inputSize + 1] = map_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight2*inputSize + 1]);
+		}
 	}
 	__syncthreads();
 	//stop data
@@ -291,7 +298,7 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
     // Launch a kernel on the GPU with one thread for each element.
 	learnApuntes11 << <1, mapSize >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
 	learnApuntes << <1, numInput >> >(mapSize, inputSize,numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
-	learnApuntes11 << <1, mapSize >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
+	//learnApuntes11 << <1, mapSize >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
 	//learnApuntes << <1, numInput >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();

@@ -48,9 +48,11 @@ int main(const int argc, const char *const *const argv){
 		float inputaux[kohonen::numInput * kohonen::inputSize] = { 0 };
 		for (i = 0; i < kohonen::numInput*kohonen::inputSize;i++){
 			if ((i % 2) == 0){
+				//input[i] = (input[i] - minInputX) / (maxInputX - minInputX);
 				input[i] = (input[i] - (minInputX + maxInputX)/2) / (maxInputX - minInputX);
 			}
 			else{
+				//input[i] = (input[i] - minInputY) / (maxInputY - minInputY);
 				input[i] = (input[i] - (minInputY + maxInputY)/2) / (maxInputY - minInputY);
 			}
 		}
