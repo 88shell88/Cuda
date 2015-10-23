@@ -38,65 +38,59 @@ __global__ void learnApuntes11(int mapSize, int inputSize, int numInput, float m
 	__syncthreads();
 
 	//printf("weight = %f    input= %f\n", weight_shared[i * inputSize], input_shared[i*inputSize]);
-	for (epoch = 0; epoch < 250; epoch++){
-		//hR = 0.0f;
+	for (epoch = 0; epoch < 50; epoch++){
+		hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
 		hI = sqrt(pow((input_shared[0 * inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[0 * inputSize + 1] - map_shared[i*inputSize + 1]), 2));
-		//hI1= sqrt(pow((input_shared[i*inputSize] - map_shared[0 * inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[0 * inputSize + 1]), 2));
 		for (nodo = 1; nodo < numInput; nodo++){
-			hR = sqrt(pow((input_shared[nodo*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[nodo*inputSize + 1] - map_shared[i*inputSize + 1]), 2)) * (hits_shared[nodo] + 1) / (epoch + 1);
+			hR = sqrt(pow((input_shared[nodo*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[nodo*inputSize + 1] - map_shared[i*inputSize + 1]), 2)) *((hits_shared[nodo] + 1) / (epoch + 1));
 			if (hR < hI){
-				/*if (i == 0){
-				printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
-				}*/
+
 				hI = hR;
 				minNodo = nodo;
-				hits_shared[nodo] = hits_shared[nodo] + 1;
+
 			}
-			
+
 		}
-		/*if ((i % 3) == 0){
-		int j = i / 3;
+		hits_shared[minNodo] = hits_shared[minNodo] + 1;
+		minMap = i;
 		minMapRight1 = minMap + 1;
 		if (minMapRight1 == mapSize) {
-		minMapRight1 = 0;
-		minMapRight2 = 1;
+			minMapRight1 = 0;
+			minMapRight2 = 1;
 		}
 
 		minMapLeft1 = minMap - 1;
 		if (minMapLeft1 == -1)  {
-		minMapLeft1 == mapSize - 1;
-		minMapLeft2 == mapSize - 2;
+			minMapLeft1 == mapSize - 1;
+			minMapLeft2 == mapSize - 2;
 		}
 		minMapRight2 = minMap + 2;
 		if (minMapRight2 == mapSize) minMapRight2 = 0;
 		minMapLeft2 = minMap - 2;
 		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 
-		//atomicAdd( &weight_shared[minMap*inputSize] , eta*(input_shared[j*inputSize] - map_shared[minMap*inputSize]));
-		//atomicAdd( &weight_shared[minMap*inputSize + 1] , eta*(input_shared[j*inputSize + 1] - map_shared[minMap*inputSize + 1]));
 
-		}*/
 
-		minMap = i;
+		
 
 		map_shared[minMap*inputSize] = map_shared[minMap*inputSize] + eta*(input_shared[minNodo*inputSize] - map_shared[minMap*inputSize]);
 		map_shared[minMap*inputSize + 1] = map_shared[minMap*inputSize + 1] + eta*(input_shared[minNodo*inputSize + 1] - map_shared[minMap*inputSize + 1]);
 
 
 
-		/*map_shared[minMapLeft1*inputSize]=map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
-		map_shared[minMapLeft1*inputSize + 1]=map_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
+		/*map_shared[minMapLeft1*inputSize] = map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
+		map_shared[minMapLeft1*inputSize + 1] = map_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
 
-		map_shared[minMapLeft2*inputSize]=map_shared[minMapLeft2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapLeft2*inputSize]);
-		map_shared[minMapLeft2*inputSize + 1]=map_shared[minMapLeft2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft2*inputSize + 1]);
+		map_shared[minMapLeft2*inputSize] = map_shared[minMapLeft2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapLeft2*inputSize]);
+		map_shared[minMapLeft2*inputSize + 1] = map_shared[minMapLeft2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft2*inputSize + 1]);
 
-		map_shared[minMapRight1*inputSize]=map_shared[minMapRight1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapRight1*inputSize]);
-		map_shared[minMapRight1*inputSize + 1]=map_shared[minMapRight1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight1*inputSize + 1]);
+		map_shared[minMapRight1*inputSize] = map_shared[minMapRight1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapRight1*inputSize]);
+		map_shared[minMapRight1*inputSize + 1] = map_shared[minMapRight1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight1*inputSize + 1]);
 
-		map_shared[minMapRight2*inputSize]=map_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapRight2*inputSize]);
-		map_shared[minMapRight2*inputSize + 1]=map_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight2*inputSize + 1]);
-		*/
+		map_shared[minMapRight2*inputSize] = map_shared[minMapRight2*inputSize] + eta*0.25*(input_shared[minNodo*inputSize] - map_shared[minMapRight2*inputSize]);
+		map_shared[minMapRight2*inputSize + 1] = map_shared[minMapRight2*inputSize + 1] + eta*0.25*(input_shared[minNodo*inputSize + 1] - map_shared[minMapRight2*inputSize + 1]);
+	*/
 	}
 	//stop data
 	dev_map[i*inputSize] = map_shared[i*inputSize];
@@ -116,8 +110,6 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 	int nodo;
 	float hR,hR2,hR1,hR3;
 	int epoch;
-	bool alocated[60] = { false };
-	//printf("mapSize : %d         inputSize : %d        numInput : %d\n" , mapSize,inputSize,numInput);
 
 	//start data
 	input_shared[i * 2] = dev_input[i * 2];
@@ -144,50 +136,21 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 		//sacar la neurona ganadora y sus vecinos
 		//hI es el minimo local
 		hI = sqrt(pow((input_shared[0] - map_shared[i*inputSize]), 2) + pow((input_shared[1] - map_shared[i*inputSize + 1]), 2));
-		if (i == 19){
-			//printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
-			//printf("****************************************\ni= %d nodo = %d      inputX = %f         inputY = %f\n*********************************\n", i, nodo, input_shared[i*inputSize], input_shared[i*inputSize + 1]);
-		}
 		//Por cada nodo que no sea el primero
 		for (nodo = 1; nodo < mapSize; nodo++){
 			//calcula la distancia de ese nodo
 			
-			hR = sqrt(pow((input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[nodo*inputSize + 1]), 2));
-			/*if (i == 19){
-				printf("nodo:%d -> sqrt(pow( - %f) + pow( - %f)) -> %f\n", nodo, map_shared[nodo*inputSize], map_shared[nodo*inputSize + 1], hR);
-			}*/
-			//if (nodo == 1){
-				//printf("nodo 1     hr : %f     hI : %f\n", hR, hI);
-			//}
-			//if (nodo == 45){
-				//printf("nodo 45  i : %d    hr : %f     hI : %f\n",i,hR,hI);
-			//}
-			//y si es menor que el minimo local, almacena su indice
-			if ((hR < hI)){//&&(alocated[nodo]==false)){
-
-				/*if (i == 19){
-					printf(" El de arriba es un tio de puta madre\n");
-					//printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
-					//printf("****************************** \n map_shared[nodo*inputSize] = %f map_shared[nodo*inputSize + 1] = %f \n input_shared[i*inputSize] = %f  input_shared[i*inputSize + 1] = %f \n*****************************\n", map_shared[nodo*inputSize], map_shared[nodo*inputSize + 1], input_shared[i*inputSize], input_shared[i*inputSize + 1]);
-				}*/
+			hR = sqrt(pow((input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[nodo*inputSize + 1]), 2));// *((hits_shared[i]) / (epoch + 1));
+			if ((hR < hI)){
 				hI = hR;
 				minMap = nodo;
-
+				
 			}
-			if (hR == 0){
-				alocated[nodo] = true;
-				if (epoch == 1999)printf("alocated i = %d --> nodo = %d\n",i,nodo);
-			}
-			//else{
-				//if (i == 19){
-					//printf("i= %d nodo = %d      hI = %f         hR = %f\n", i, nodo, hI, hR);
-				//}
-			//}
-
+			
 		}
 
 		minNodo = i;
-
+		//hits_shared[minNodo] = hits_shared[minNodo] + 1;
 		//necesito almacenar el indice de los nodos siguientes
 		minMapRight1 = minMap+1;
 		minMapRight2 = minMap + 2;
@@ -207,10 +170,8 @@ __global__ void learnApuntes(int mapSize, int inputSize,int numInput, float maxI
 		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 		eta = eta - eta/100;
 		if (epoch >= 100) eta = 0.5f;
-		//if (i == 19) printf("Voy a mover el nodo %d, que tienes las coordenadas en: %d, %d: (%f, %f) ->", minMap, minMap*inputSize, minMap*inputSize + 1, map_shared[minMap*inputSize], map_shared[minMap*inputSize + 1]);
 		map_shared[minMap*inputSize]=map_shared[minMap*inputSize] + eta*(input_shared[minNodo*inputSize] - map_shared[minMap*inputSize]);
 		map_shared[minMap*inputSize + 1]=map_shared[minMap*inputSize + 1] + eta*(input_shared[minNodo*inputSize + 1] - map_shared[minMap*inputSize + 1]);
-		//if(i==19) printf("(%f, %f)\n", map_shared[minMap*inputSize], map_shared[minMap*inputSize + 1]);
 		if (epoch < 100){
 			map_shared[minMapLeft1*inputSize] = map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
 			map_shared[minMapLeft1*inputSize + 1] = map_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
@@ -241,7 +202,6 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 {
 	float *dev_input = 0;
 	float *dev_map = 0;
-	//float *dev_weight = 0;
 
     cudaError_t cudaStatus;
 
@@ -253,11 +213,6 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
     }
 
     // Allocate GPU buffers for three vectors (two input, one output)    .
-	/*cudaStatus = cudaMalloc((void**)&dev_weight, inputSize*mapSize* sizeof(float));
-	if (cudaStatus != cudaSuccess) {
-		fprintf(stderr, "cudaMalloc failed!");
-		goto Error;
-	}*/
 	cudaStatus = cudaMalloc((void**)&dev_input, inputSize*numInput* sizeof(float));
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMalloc failed!");
@@ -270,11 +225,6 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 	}
 	
     // Copy input vectors from host memory to GPU buffers.
-	/*cudaStatus = cudaMemcpy(dev_weight, weight, inputSize*mapSize * sizeof(float), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) {
-		fprintf(stderr, "cudaMemcpy failed!");
-		goto Error;
-	}*/
 	cudaStatus = cudaMemcpy(dev_input, input, inputSize*numInput * sizeof(float), cudaMemcpyHostToDevice);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
@@ -306,11 +256,6 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
     }
 
     // Copy output vector from GPU buffer to host memory.
-	/*cudaStatus = cudaMemcpy(weight, dev_weight, mapSize * inputSize * sizeof(float), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) {
-		fprintf(stderr, "cudaMemcpy failed!");
-		goto Error;
-	}*/
 	cudaStatus = cudaMemcpy(map, dev_map, mapSize * 2 * sizeof(float), cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMemcpy failed!");
@@ -320,7 +265,6 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 Error:
     cudaFree(dev_input);
 	cudaFree(dev_map);
-	//cudaFree(dev_weight);
     
     return cudaStatus;
 }
