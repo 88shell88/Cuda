@@ -10,7 +10,9 @@ public:
 	static const int inputSize = 2;
 	static const int dimension = 2;
 	
-	static const int numInput = 20;
-	static const int mapSize = numInput * 3;
+	static const int numInput=20;
+	static const int mapSize=60;
+	static const int N;
+
 };
 #endif
