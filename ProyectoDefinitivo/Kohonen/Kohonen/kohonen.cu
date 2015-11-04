@@ -39,7 +39,6 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 		hI = sqrt(pow((input_shared[0 * inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[0 * inputSize + 1] - map_shared[i*inputSize + 1]), 2));
 		for (nodo = 1; nodo < numInput; nodo++){
 			hR = sqrt(pow((input_shared[nodo*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[nodo*inputSize + 1] - map_shared[i*inputSize + 1]), 2)) *((hits_shared[nodo]+1) / (epoch + 1));
-			printf("%d       ,     %d\n", (hits_shared[nodo] + 1) , (epoch + 1));
 			if (hR < hI){
 
 				hI = hR;
