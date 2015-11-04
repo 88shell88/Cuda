@@ -10,6 +10,7 @@
 #include <fstream>
 #include <windows.h>
 #include <iostream>
+#include <sstream>
 #include "cuda_runtime.h"
 #include <vector>
 using namespace std;
@@ -17,13 +18,23 @@ using namespace std;
 #define PI 3.14159265
 
 int main(const int argc, const char *const *const argv){
+	bool input = false;
+	string st;
+	while (!input){
+		printf("Introduzca el nombre del archivo que contiene el mapa : \n");
+		getline(cin,st);
+		std::ifstream infile0(st);
+		if (infile0){
+			input = true;
+		}
+	}
 	try{
 		int i = 0;
 		kohonen koh;
 		//int kohonen::numInput = 20;
 		const int numIn = kohonen::numInput;
 		int num = 0;
-		std::ifstream infile("inputOrig.txt");
+		std::ifstream infile(st);
 		float a, b;
 		while (infile >> a >> b)
 		{
@@ -33,7 +44,7 @@ int main(const int argc, const char *const *const argv){
 		float* input = new float[num*2];
 		int index = 0;
 		printf("numInputs = %d\n", num);
-		std::ifstream infile2("inputOrig.txt");
+		std::ifstream infile2(st);
 		
 		while (infile2 >> a >> b)
 		{
