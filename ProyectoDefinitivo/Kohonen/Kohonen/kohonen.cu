@@ -10,7 +10,7 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 	extern __shared__ float shared[];
 	float *map_shared = shared;
 	float *input_shared = (float*)&map_shared[mapSize * 2];
-	int *hits_shared = (int*)&input_shared[inputSize * 2];
+	float *hits_shared = (float*)&input_shared[numInput * 2];
 	
 	float eta = 0.1f;
 	int i = threadIdx.x;
@@ -205,7 +205,7 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 	}
 
     // Launch a kernel on the GPU with one thread for each element.
-	learnFirstIteration << <1, mapSize , sizeof(float)*(mapSize*2+numInput*2) + sizeof(int)*numInput>> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
+	learnFirstIteration << <1, mapSize , sizeof(float)*(mapSize*2+numInput*2 + numInput)>> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
 	learnSecondIteration << <1, numInput, sizeof(float)*(mapSize * 2 + numInput * 2) >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
 
     // Check for any errors launching the kernel
