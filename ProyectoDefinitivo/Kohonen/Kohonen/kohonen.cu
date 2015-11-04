@@ -7,18 +7,11 @@
 #include <stdio.h>
 #include <math.h>
 
-//__shared__ float *map_shared;//[kohonen::mapSize * kohonen::dimension];
-//__shared__ float map_shared;// [kohonen::mapSize * kohonen::dimension];
-//__shared__ float input_shared;// [kohonen::inputSize*kohonen::numInput];
-//__shared__ float hits_shared;// [kohonen::inputSize];
-
-__global__ void learnApuntes11(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
+__global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
 	extern __shared__ float shared[];
 	float *map_shared = shared;
 	float *input_shared = (float*)&map_shared[mapSize * 2];
 	int *hits_shared = (int*)&input_shared[inputSize * 2];
-
-	printf("size map : %f",sizeof(*shared)/sizeof(float));
 	
 	int minMapLeft1, minMapRight1, minMapLeft2, minMapRight2;
 	float eta = 0.1f;
@@ -35,19 +28,12 @@ __global__ void learnApuntes11(int mapSize, int inputSize, int numInput, float m
 	map_shared[i * 2] = dev_map[i * 2];
 	map_shared[i * 2 + 1] = dev_map[i * 2 + 1];
 	if (i < kohonen::numInput){
-		//map_shared[mapSize*2 +i] = dev_input[i];
 		input_shared[i * 2] = dev_input[i * 2];
 		input_shared[i * 2 + 1] = dev_input[i * 2 + 1] ;
 		hits_shared[i] = 0;
 	}
-	printf("map : %f\n",map_shared[i]);
-	if (i < kohonen::numInput){
-		printf("input : %f   %d    %d\n", map_shared[mapSize * 2 + 7], mapSize * 2 + 7, mapSize * 2 + numInput * 2 + numInput);
-	}
-
 	__syncthreads();
 
-	//printf("weight = %f    input= %f\n", weight_shared[i * inputSize], input_shared[i*inputSize]);
 	for (epoch = 0; epoch < 50; epoch++){
 		hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
@@ -76,7 +62,7 @@ __global__ void learnApuntes11(int mapSize, int inputSize, int numInput, float m
 
 
 
-__global__ void learnApuntes(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
+__global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
 	extern __shared__ float shared[];
 	float *map_shared = shared;
 	float *input_shared = (float*)&map_shared[mapSize * 2];
@@ -121,7 +107,7 @@ __global__ void learnApuntes(int mapSize, int inputSize, int numInput, float max
 		for (nodo = 1; nodo < mapSize; nodo++){
 			//calcula la distancia de ese nodo
 
-			hR = sqrt(pow((input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[nodo*inputSize + 1]), 2));// *((hits_shared[i]) / (epoch + 1));
+			hR = sqrt(pow((input_shared[i*inputSize] - map_shared[nodo*inputSize]), 2) + pow((input_shared[i*inputSize + 1] - map_shared[nodo*inputSize + 1]), 2));
 			if ((hR < hI)){
 				hI = hR;
 				minMap = nodo;
@@ -131,7 +117,6 @@ __global__ void learnApuntes(int mapSize, int inputSize, int numInput, float max
 		}
 
 		minNodo = i;
-		//hits_shared[minNodo] = hits_shared[minNodo] + 1;
 		//necesito almacenar el indice de los nodos siguientes
 		minMapRight1 = minMap + 1;
 		minMapRight2 = minMap + 2;
@@ -148,16 +133,12 @@ __global__ void learnApuntes(int mapSize, int inputSize, int numInput, float max
 			
 			minMapLeft1 = mapSize - 1;
 			minMapLeft2 = mapSize - 2;
-			//printf("******************** mapsize : %d minl1 : %d    minl2 : %d\n", mapSize, minMapLeft1,minMapLeft2);
 		}
 		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 		eta = eta - eta / 100;
 		if (epoch >= 100) eta = 0.5f;
 		map_shared[minMap*inputSize] = map_shared[minMap*inputSize] + eta*(input_shared[minNodo*inputSize] - map_shared[minMap*inputSize]);
 		map_shared[minMap*inputSize + 1] = map_shared[minMap*inputSize + 1] + eta*(input_shared[minNodo*inputSize + 1] - map_shared[minMap*inputSize + 1]);
-
-		
-		//printf("epoch : %d   i : %d   minmap : %d       minmapl1 : %d     minmapl2 : %d    minmapr1 : %d     minmapr2 : %d  \n", epoch, minNodo, minMap, minMapLeft1, minMapLeft2, minMapRight1, minMapRight2);
 
 		if (epoch < 100){
 			map_shared[minMapLeft1*inputSize] = map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
@@ -225,8 +206,8 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 	}
 
     // Launch a kernel on the GPU with one thread for each element.
-	learnApuntes11 << <1, mapSize , sizeof(float)*(mapSize*2+numInput*2) + sizeof(int)*numInput>> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
-	learnApuntes << <1, numInput , sizeof(float)*(mapSize*2+numInput*2) >> >(mapSize, inputSize,numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
+	learnFirstIteration << <1, mapSize , sizeof(float)*(mapSize*2+numInput*2) + sizeof(int)*numInput>> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
+	learnSecondIteration << <1, numInput, sizeof(float)*(mapSize * 2 + numInput * 2) >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
 
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();

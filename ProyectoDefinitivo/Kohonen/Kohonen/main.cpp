@@ -18,49 +18,44 @@ using namespace std;
 #define PI 3.14159265
 
 int main(const int argc, const char *const *const argv){
-	bool input = false;
-	string st;
-	while (!input){
+	bool inputGood = false;
+	string fileName;
+	while (!inputGood){
 		printf("Introduzca el nombre del archivo que contiene el mapa : \n");
-		getline(cin,st);
-		std::ifstream infile0(st);
+		getline(cin, fileName);
+		std::ifstream infile0(fileName);
 		if (infile0){
-			input = true;
+			inputGood = true;
 		}
 	}
 	try{
 		int i = 0;
 		kohonen koh;
 		//int kohonen::numInput = 20;
-		const int numIn = kohonen::numInput;
-		int num = 0;
-		std::ifstream infile(st);
-		float a, b;
-		while (infile >> a >> b)
+		int numberOfInputs = 0;
+		std::ifstream infile(fileName);
+		float xCoordinate, yCoordinate;
+		while (infile >> xCoordinate >> yCoordinate)
 		{
-			num++;
+			numberOfInputs++;
 			// process pair (a,b)
 		}
-		float* input = new float[num*2];
+		float* input = new float[numberOfInputs * 2];
 		int index = 0;
-		printf("numInputs = %d\n", num);
-		std::ifstream infile2(st);
+		std::ifstream infile2(fileName);
 		
-		while (infile2 >> a >> b)
+		while (infile2 >> xCoordinate >> yCoordinate)
 		{
-			printf("inputs = %f   %f\n", a, b);
 			// process pair (a,b)
-			input[index*2] = a;
-			input[index*2+1] = b;
+			input[index * 2] = xCoordinate;
+			input[index * 2 + 1] = yCoordinate;
 			index++;
 		}
-		printf("**index = %d   inputs = %f   %f\n",index, input[36], input[37]);
 
-		system("PAUSE");
-		float *inputX = new float[num];
+		float *inputX = new float[numberOfInputs];
 		float iX = 0, iY = 0;
-		float *inputY = new float[num];
-		for (i = 0; i < num * kohonen::inputSize;i++){
+		float *inputY = new float[numberOfInputs];
+		for (i = 0; i < numberOfInputs * kohonen::inputSize; i++){
 			if ((i % 2) == 0){
 				inputX[i / 2] = input[i];
 				iX = iX + input[i];
@@ -98,14 +93,11 @@ int main(const int argc, const char *const *const argv){
 
 		float map[kohonen::numInput*kohonen::dimension * 3];
 		float angulo = 360 / (kohonen::numInput * 3);
-		printf("%f", angulo);
 		
 		
 		for (i = 0; i < kohonen::numInput * 3; i++){
 			map[i*kohonen::dimension] = cos((angulo*i)* PI / 180.0);
-			printf("nodo = %d  angulo = %f   x = %f   ,   ", i, i*angulo, map[i*kohonen::dimension]);
 			map[i*kohonen::dimension + 1] = sin((angulo*i)* PI / 180);
-			printf("y = %f\n", map[i*kohonen::dimension+1]);
 			
 		}
 		ofstream fout2("mapOrig.txt");
@@ -117,22 +109,16 @@ int main(const int argc, const char *const *const argv){
 			}
 		}
 		fout2.close();
-		system("PAUSE");
 
 		DWORD dw1 = GetTickCount();
-		cudaError_t cudaStatus = koh.train(kohonen::inputSize, num*3, kohonen::numInput, input, map, maxInputX, minInputX, maxInputY, minInputY);
+		cudaError_t cudaStatus = koh.train(kohonen::inputSize, numberOfInputs * 3, kohonen::numInput, input, map, maxInputX, minInputX, maxInputY, minInputY);
 		DWORD dw2 = GetTickCount();
 		if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "addWithCuda failed!");
 			return 1;
 		}
 		printf("Time difference is %d miliseconds\n", (dw2 - dw1));
-		system("PAUSE");
-		
-		for (i = 0; i < kohonen::numInput * 3; i++){
-			printf("nodo = %d     x = %f   ,",i, map[i*kohonen::dimension]);
-			printf("    y = %f\n", map[i*kohonen::dimension+1]);
-		}
+
 		ofstream fout3("mapAfter.txt");
 		if (fout3.is_open())
 		{
