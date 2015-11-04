@@ -1,18 +1,20 @@
-#include "kohonen.h"
+
 #include <cuda.h>
 #include <time.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <exception>
-#include "kohonen.h"
 #include <algorithm>
 #include <fstream>
 #include <windows.h>
 #include <iostream>
 #include <sstream>
+
+#include "kohonen.h"
 #include "cuda_runtime.h"
-#include <vector>
+
+
 using namespace std;
 
 #define PI 3.14159265

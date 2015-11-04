@@ -1,11 +1,10 @@
+#include <stdio.h>
+#include <math.h>
 
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include "kohonen.h"
 #include "device_functions.h"
-
-#include <stdio.h>
-#include <math.h>
 
 __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
 	extern __shared__ float shared[];
@@ -13,15 +12,13 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 	float *input_shared = (float*)&map_shared[mapSize * 2];
 	int *hits_shared = (int*)&input_shared[inputSize * 2];
 	
-	int minMapLeft1, minMapRight1, minMapLeft2, minMapRight2;
 	float eta = 0.1f;
-	float eta2 = 0.5f;
 	int i = threadIdx.x;
 	float hI;
 	int minMap = 0;
 	int minNodo = 0;
 	int nodo;
-	float hR, hR2, hR1, hR3;
+	float hR;
 	int epoch;
 	//start data
 	
@@ -39,7 +36,7 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 		//sacar la neurona ganadora y sus vecinos
 		hI = sqrt(pow((input_shared[0 * inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[0 * inputSize + 1] - map_shared[i*inputSize + 1]), 2));
 		for (nodo = 1; nodo < numInput; nodo++){
-			hR = sqrt(pow((input_shared[nodo*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[nodo*inputSize + 1] - map_shared[i*inputSize + 1]), 2)) *((hits_shared[nodo] + 1) / (epoch + 1));
+			hR = sqrt(pow((input_shared[nodo*inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[nodo*inputSize + 1] - map_shared[i*inputSize + 1]), 2));// *((hits_shared[nodo] + 1) / (epoch + 1));
 			if (hR < hI){
 
 				hI = hR;
@@ -69,13 +66,12 @@ __global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, f
 
 	int minMapLeft1, minMapRight1, minMapLeft2, minMapRight2;
 	float eta = 0.1f;
-	float eta2 = 0.5f;
 	int i = threadIdx.x;
-	float hI, hI1;
+	float hI;
 	int minMap = 0;
 	int minNodo = 0;
 	int nodo;
-	float hR, hR2, hR1, hR3;
+	float hR;
 	int epoch;
 
 	//start data
