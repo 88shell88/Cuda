@@ -6,13 +6,13 @@
 #include "kohonen.h"
 #include "device_functions.h"
 
-__global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
+__global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map, int numEpoch1, float eta1){
 	extern __shared__ float shared[];
 	float *map_shared = shared;
 	float *input_shared = (float*)&map_shared[mapSize * 2];
 	float *hits_shared = (float*)&input_shared[numInput * 2];
 	
-	float eta = 0.1f;
+	float eta = eta1;
 	int i = threadIdx.x;
 	float hI;
 	int minMap = 0;
@@ -23,7 +23,7 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 	//start data
 	
 	
-	if (i < kohonen::numInput){
+	if (i < numInput){
 		input_shared[i * 2] = dev_input[i * 2];
 		input_shared[i * 2 + 1] = dev_input[i * 2 + 1] ;
 		hits_shared[i] = 0;
@@ -33,7 +33,7 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 	map_shared[i * 2 + 1] = dev_map[i * 2 + 1];
 	__syncthreads();
 
-	for (epoch = 0; epoch < 50; epoch++){
+	for (epoch = 0; epoch < numEpoch1; epoch++){
 		hR = 0.0f;
 		//sacar la neurona ganadora y sus vecinos
 		hI = sqrt(pow((input_shared[0 * inputSize] - map_shared[i*inputSize]), 2) + pow((input_shared[0 * inputSize + 1] - map_shared[i*inputSize + 1]), 2));
@@ -61,13 +61,13 @@ __global__ void learnFirstIteration(int mapSize, int inputSize, int numInput, fl
 
 
 
-__global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map){
+__global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, float maxInputX, float minInputX, float maxInputY, float minInputY, float *dev_input, float *dev_map, int timesMap, int numEpoch2, int numEpoch3, float eta1, float eta2){
 	extern __shared__ float shared[];
 	float *map_shared = shared;
 	float *input_shared = (float*)&map_shared[mapSize * 2];
 
 	int minMapLeft1, minMapRight1, minMapLeft2, minMapRight2;
-	float eta = 0.1f;
+	float eta = eta1;
 	int i = threadIdx.x;
 	float hI;
 	int minMap = 0;
@@ -75,18 +75,15 @@ __global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, f
 	int nodo;
 	float hR;
 	int epoch;
+	int times;
 
 	//start data
 	input_shared[i * 2] = dev_input[i * 2];
 	input_shared[i * 2 + 1] = dev_input[i * 2 + 1];
 
-
-	map_shared[i * 6] = dev_map[i * 6];
-	map_shared[i * 6 + 1] = dev_map[i * 6 + 1];
-	map_shared[i * 6 + 2] = dev_map[i * 6 + 2];
-	map_shared[i * 6 + 3] = dev_map[i * 6 + 3];
-	map_shared[i * 6 + 4] = dev_map[i * 6 + 4];
-	map_shared[i * 6 + 5] = dev_map[i * 6 + 5];
+	for (times = 0; times < timesMap*kohonen::inputSize; times++){
+		map_shared[i * timesMap*kohonen::inputSize + times] = dev_map[i * timesMap*kohonen::inputSize + times];
+	}
 
 
 	__syncthreads();
@@ -94,7 +91,7 @@ __global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, f
 	
 	//Iteraciones desde 0 hasta X
 	
-	for (epoch = 0; epoch < 500; epoch++){
+	for (epoch = 0; epoch < numEpoch2; epoch++){
 		// hR es la distancia a comprobar, empieza a 0
 		hR = 0.0f;
 
@@ -134,11 +131,11 @@ __global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, f
 		}
 		if (minMapLeft2 == -1) minMapLeft2 = mapSize - 1;
 		eta = eta - eta / 100;
-		if (epoch >= 100) eta = 0.5f;
+		if (epoch >= numEpoch3) eta = eta2;
 		map_shared[minMap*inputSize] = map_shared[minMap*inputSize] + eta*(input_shared[minNodo*inputSize] - map_shared[minMap*inputSize]);
 		map_shared[minMap*inputSize + 1] = map_shared[minMap*inputSize + 1] + eta*(input_shared[minNodo*inputSize + 1] - map_shared[minMap*inputSize + 1]);
 
-		if (epoch < 100){
+		if (epoch < numEpoch3){
 			map_shared[minMapLeft1*inputSize] = map_shared[minMapLeft1*inputSize] + eta*0.5*(input_shared[minNodo*inputSize] - map_shared[minMapLeft1*inputSize]);
 			map_shared[minMapLeft1*inputSize + 1] = map_shared[minMapLeft1*inputSize + 1] + eta*0.5*(input_shared[minNodo*inputSize + 1] - map_shared[minMapLeft1*inputSize + 1]);
 
@@ -154,17 +151,15 @@ __global__ void learnSecondIteration(int mapSize, int inputSize, int numInput, f
 	}
 	__syncthreads();
 	//stop data
-	dev_map[i * 6] = map_shared[i * 6];
-	dev_map[i * 6 + 1] = map_shared[i * 6 + 1];
-	dev_map[i * 6 + 2] = map_shared[i * 6 + 2];
-	dev_map[i * 6 + 3] = map_shared[i * 6 + 3];
-	dev_map[i * 6 + 4] = map_shared[i * 6 + 4];
-	dev_map[i * 6 + 5] = map_shared[i * 6 + 5];
+	for (times = 0; times < timesMap*kohonen::inputSize; times++){
+		dev_map[i * timesMap*kohonen::inputSize + times] = map_shared[i * timesMap*kohonen::inputSize + times];
+	}
+
 }
 
 
 // Helper function for using CUDA to add vectors in parallel.
-cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *input, float *map, float maxInputX, float minInputX, float maxInputY, float minInputY)
+cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *input, float *map, float maxInputX, float minInputX, float maxInputY, float minInputY, int timesMap, int numEpoch1, int numEpoch2, int numEpoch3, float eta1, float eta2)
 {
 	
 	float *dev_input = 0;
@@ -185,7 +180,7 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 		fprintf(stderr, "cudaMalloc failed!");
 		goto Error;
 	}
-	cudaStatus = cudaMalloc((void**)&dev_map, mapSize * dimension * sizeof(float));
+	cudaStatus = cudaMalloc((void**)&dev_map, mapSize * inputSize * sizeof(float));
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaMalloc failed!");
 		goto Error;
@@ -204,8 +199,8 @@ cudaError_t kohonen::train(int inputSize, int mapSize, int numInput, float *inpu
 	}
 
     // Launch a kernel on the GPU with one thread for each element.
-	learnFirstIteration << <1, mapSize , sizeof(float)*(mapSize*2+numInput*2 + numInput)>> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
-	learnSecondIteration << <1, numInput, sizeof(float)*(mapSize * 2 + numInput * 2) >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map);
+	learnFirstIteration << <1, mapSize , sizeof(float)*(mapSize*2+numInput*2 + numInput)>> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map,numEpoch1, eta1);
+	learnSecondIteration << <1, numInput, sizeof(float)*(mapSize * 2 + numInput * 2) >> >(mapSize, inputSize, numInput, maxInputX, minInputX, maxInputY, minInputY, dev_input, dev_map,timesMap,numEpoch2,numEpoch3,eta1,eta2);
 
     // Check for any errors launching the kernel
     cudaStatus = cudaGetLastError();

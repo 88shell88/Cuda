@@ -4,15 +4,10 @@
 #include "cuda_runtime.h"
 class kohonen{
 public: 
-	cudaError_t train(int inputSize, int mapSize, int numInput, float *input, float *map, float maxInputX, float minInputX, float maxInputY, float minInputY);
+	cudaError_t train(int inputSize, int mapSize, int numInput, float *input, float *map, float maxInputX, float minInputX, float maxInputY, float minInputY, int timesMap, int numEpoch1, int numEpoch2, int numEpoch3, float eta1, float eta2);
 
 public:
 	static const int inputSize = 2;
-	static const int dimension = 2;
 	
-	static const int numInput=20;
-	static const int mapSize=60;
-	static const int N;
-
 };
 #endif
