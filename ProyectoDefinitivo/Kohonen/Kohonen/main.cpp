@@ -106,7 +106,7 @@ int main(const int argc, const char *const *const argv){
 		}
 	}
 	DWORD time = GetTickCount();
-	string path = pathName + "\\" + std::to_string(time) + "-" + fileName + "-" + std::to_string(numEpoch1) + "-" + std::to_string(numEpoch2) + "-" + std::to_string(numEpoch3) + "-" + std::to_string(timesMap) + "-" + std::to_string(eta1) + "-" + std::to_string(eta2);
+	string path = pathName + "\\CUDA-" + std::to_string(time) + "-" + fileName + "-" + std::to_string(numEpoch1) + "-" + std::to_string(numEpoch2) + "-" + std::to_string(numEpoch3) + "-" + std::to_string(timesMap) + "-" + std::to_string(eta1) + "-" + std::to_string(eta2);
 	LPCSTR lpMyString = path.c_str();
 	
 	CreateDirectory(lpMyString ,NULL);
